@@ -1,0 +1,110 @@
+# Morning Paper config. `${VAR}` is filled from the environment (keep secrets
+# there, not here). Every top-level key is optional; see config.py for defaults.
+
+title: The Morning Paper
+tagline: All the news that fits on a Kindle
+timezone: Australia/Sydney
+schedule: "06:00"          # daily send time (local)
+catch_up_until: "09:00"    # started late but before this? send today's anyway
+max_age_hours: 26          # only stories newer than this
+full_articles: 10          # total full-text chapters across all sections
+min_article_words: 150     # shorter extractions stay headline-only
+
+# Who the curator is choosing for. Shapes every section's picks.
+reader_profile: >-
+  Lives in Sydney, runs a few self-hosted apps, cooks most nights. Likes
+  substance over hype, practical detail, and release notes that say what
+  actually changed.
+
+# Any OpenAI-compatible endpoint. Open WebUI fronts both llama-server and
+# OpenRouter, so the model name picks the backend; tried in order.
+llm:
+  base_url: http://open-webui.lan:8080/api
+  api_key: ${LLM_API_KEY}
+  # Names as Open WebUI lists them. `extra` is merged into the request: the
+  # local Qwen3.5 thinks for many thousands of tokens unless told not to.
+  models:
+    - name: chat
+      extra: {chat_template_kwargs: {enable_thinking: false}}
+    - anthropic/claude-haiku-5.5
+  timeout: 300             # per model, whole reply; then the next model
+  max_tokens: 4096
+
+freshrss:
+  url: http://freshrss.lan
+  user: admin
+  api_password: ${FRESHRSS_API_PASSWORD}
+  mark_read: true          # mark stories that made the paper as read
+
+delivery:
+  smtp_host: smtp.gmail.com
+  smtp_port: 465
+  smtp_user: ${SMTP_USER}
+  smtp_password: ${SMTP_PASSWORD}   # Gmail: an app password
+  to: ["${KINDLE_EMAIL}"]            # your @kindle.com address
+
+heartbeat_url: ${HEARTBEAT_URL}     # optional Uptime Kuma push URL
+
+# Front page, in this order. Remove a block to drop it.
+widgets:
+  weather: {place: Sydney, latitude: -33.87, longitude: 151.21}
+  calendar: {ical_url: "${CALENDAR_ICAL_URL}"}
+  seerr: {url: "https://seerr.example.com", email: "${SEERR_EMAIL}", password: "${SEERR_PASSWORD}"}
+  kuma: {url: "https://kuma.example.com", status_page: homelab, hours: 12}
+  on_this_day: {count: 3}
+
+# One section per FreshRSS category (see feeds/starter.opml). Order = paper order.
+#   category:  FreshRSS category (or list) feeds: extra feed URLs read directly
+#   max_items: headlines in the section   max_full: of those, full-text chapters
+#   hint:      extra guidance for the curator
+#   generate:  an LLM-written section (no feeds needed)
+#   days:      only on these days, e.g. [sat, sun]
+#   exclude:   regex; matching titles are dropped before the curator sees them
+sections:
+  - name: News
+    category: News
+    max_items: 6
+    max_full: 2
+    hint: Australian news. Skip sport and celebrity unless it's genuinely big.
+  - name: World
+    category: World
+    max_items: 5
+    max_full: 1
+  - name: Tech
+    category: Tech
+    max_items: 6
+    max_full: 2
+  - name: Your Stack
+    category: My Stack
+    max_items: 6
+    max_full: 1
+    exclude: '\b(alpha|beta|rc\d*|nightly|dev|canary)\b|release-publish/'
+    hint: >-
+      Release notes for software the reader runs. Blurb what changed and
+      whether it needs action (breaking changes, migrations, security fixes).
+      Skip pre-releases and nightlies unless they matter.
+  - name: AI & Self-hosting
+    category: [AI, Self-hosting]
+    max_items: 5
+    max_full: 2
+  - name: Music
+    category: Music
+    max_items: 4
+    max_full: 1
+  - name: Gaming
+    category: Gaming
+    max_items: 4
+    max_full: 1
+  - name: In the Kitchen
+    category: Food
+    max_items: 2
+    max_full: 1
+    generate: >-
+      Suggest three weeknight dinner ideas using produce that's in season in
+      Sydney right now. For each: a one-line pitch, the key ingredients, and
+      rough time. Vary the cuisines.
+  - name: The Long Read
+    category: Long Reads
+    max_items: 1
+    max_full: 1
+    days: [sat, sun]

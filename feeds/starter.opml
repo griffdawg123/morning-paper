@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Starter subscriptions for FreshRSS: Subscription management > Import / export > Import.
+  Each top-level outline becomes a FreshRSS category, and each category is one
+  section of the paper (match `category:` in paper.yml). All URLs were checked
+  live on 2026-11-24. Prune freely: the curator only sees the last day's items.
+
+  Not included, and why:
+  - Reddit (r/LocalLLaMA, r/selfhosted): Reddit 403s/429s feed readers without
+    OAuth, so these break within a day. Use FreshRSS's "Reddit" extension or skip.
+  - llama.cpp releases: several builds a day, pure noise.
+  - TrueNAS blog: no feed; the forum announcements category below covers releases.
+  Other sources worth knowing about:
+  - hnrss.org has many filters: /best, /newest?q=selfhosted, ?points=N, ?comments=N
+  - Any GitHub repo: https://github.com/<owner>/<repo>/releases.atom
+  - Any Substack: https://<name>.substack.com/feed
+  - Sites with no feed: in FreshRSS add the page as an "HTML + XPath" feed.
+-->
+<opml version="2.0">
+  <head><title>Morning Paper starter feeds</title></head>
+  <body>
+    <outline text="News">
+      <outline type="rss" text="ABC News: Top Stories" xmlUrl="https://www.abc.net.au/news/feed/51120/rss.xml" htmlUrl="https://www.abc.net.au/news"/>
+      <outline type="rss" text="Guardian Australia" xmlUrl="https://www.theguardian.com/australia-news/rss" htmlUrl="https://www.theguardian.com/au"/>
+      <outline type="rss" text="SBS News" xmlUrl="https://www.sbs.com.au/news/feed" htmlUrl="https://www.sbs.com.au/news"/>
+    </outline>
+    <outline text="World">
+      <outline type="rss" text="BBC News: World" xmlUrl="https://feeds.bbci.co.uk/news/world/rss.xml" htmlUrl="https://www.bbc.com/news/world"/>
+      <outline type="rss" text="NPR: World" xmlUrl="https://feeds.npr.org/1004/rss.xml" htmlUrl="https://www.npr.org/sections/world/"/>
+      <outline type="rss" text="ABC News: World" xmlUrl="https://www.abc.net.au/news/feed/2942460/rss.xml" htmlUrl="https://www.abc.net.au/news/world"/>
+    </outline>
+    <outline text="Tech">
+      <outline type="rss" text="Hacker News (250+ points)" xmlUrl="https://hnrss.org/frontpage?points=250" htmlUrl="https://news.ycombinator.com/"/>
+      <outline type="rss" text="Lobsters" xmlUrl="https://lobste.rs/rss" htmlUrl="https://lobste.rs/"/>
+      <outline type="rss" text="LWN.net" xmlUrl="https://lwn.net/headlines/rss" htmlUrl="https://lwn.net/"/>
+      <outline type="rss" text="Ars Technica" xmlUrl="https://feeds.arstechnica.com/arstechnica/index" htmlUrl="https://arstechnica.com/"/>
+    </outline>
+    <outline text="My Stack">
+      <outline type="rss" text="Immich releases" xmlUrl="https://github.com/immich-app/immich/releases.atom" htmlUrl="https://github.com/immich-app/immich/releases"/>
+      <outline type="rss" text="Jellyfin releases" xmlUrl="https://github.com/jellyfin/jellyfin/releases.atom" htmlUrl="https://github.com/jellyfin/jellyfin/releases"/>
+      <outline type="rss" text="Open WebUI releases" xmlUrl="https://github.com/open-webui/open-webui/releases.atom" htmlUrl="https://github.com/open-webui/open-webui/releases"/>
+      <outline type="rss" text="OpenClaw releases" xmlUrl="https://github.com/openclaw/openclaw/releases.atom" htmlUrl="https://github.com/openclaw/openclaw/releases"/>
+      <outline type="rss" text="Uptime Kuma releases" xmlUrl="https://github.com/louislam/uptime-kuma/releases.atom" htmlUrl="https://github.com/louislam/uptime-kuma/releases"/>
+      <outline type="rss" text="Pi-hole releases" xmlUrl="https://github.com/pi-hole/pi-hole/releases.atom" htmlUrl="https://github.com/pi-hole/pi-hole/releases"/>
+      <outline type="rss" text="Nginx Proxy Manager releases" xmlUrl="https://github.com/NginxProxyManager/nginx-proxy-manager/releases.atom" htmlUrl="https://github.com/NginxProxyManager/nginx-proxy-manager/releases"/>
+      <outline type="rss" text="Sonarr releases" xmlUrl="https://github.com/Sonarr/Sonarr/releases.atom" htmlUrl="https://github.com/Sonarr/Sonarr/releases"/>
+      <outline type="rss" text="TrueNAS announcements" xmlUrl="https://forums.truenas.com/c/announcements/5.rss" htmlUrl="https://forums.truenas.com/c/announcements/5"/>
+    </outline>
+    <outline text="AI">
+      <outline type="rss" text="Simon Willison" xmlUrl="https://simonwillison.net/atom/entries/" htmlUrl="https://simonwillison.net/"/>
+      <outline type="rss" text="Latent Space" xmlUrl="https://www.latent.space/feed" htmlUrl="https://www.latent.space/"/>
+      <outline type="rss" text="Hugging Face blog" xmlUrl="https://huggingface.co/blog/feed.xml" htmlUrl="https://huggingface.co/blog"/>
+    </outline>
+    <outline text="Self-hosting">
+      <outline type="rss" text="selfh.st" xmlUrl="https://selfh.st/rss/" htmlUrl="https://selfh.st/"/>
+      <outline type="rss" text="noted.lol" xmlUrl="https://noted.lol/rss/" htmlUrl="https://noted.lol/"/>
+    </outline>
+    <outline text="Music">
+      <outline type="rss" text="Pitchfork: Album Reviews" xmlUrl="https://pitchfork.com/feed/feed-album-reviews/rss" htmlUrl="https://pitchfork.com/reviews/albums/"/>
+      <outline type="rss" text="The Quietus" xmlUrl="https://thequietus.com/feed" htmlUrl="https://thequietus.com/"/>
+      <outline type="rss" text="Stereogum" xmlUrl="https://www.stereogum.com/feed/" htmlUrl="https://www.stereogum.com/"/>
+      <outline type="rss" text="Music Feeds (AU)" xmlUrl="https://musicfeeds.com.au/feed/" htmlUrl="https://musicfeeds.com.au/"/>
+    </outline>
+    <outline text="Gaming">
+      <outline type="rss" text="Rock Paper Shotgun" xmlUrl="https://www.rockpapershotgun.com/feed" htmlUrl="https://www.rockpapershotgun.com/"/>
+      <outline type="rss" text="Eurogamer" xmlUrl="https://www.eurogamer.net/feed" htmlUrl="https://www.eurogamer.net/"/>
+      <outline type="rss" text="Nintendo Life" xmlUrl="https://www.nintendolife.com/feeds/latest" htmlUrl="https://www.nintendolife.com/"/>
+      <outline type="rss" text="Victory Road (VGC)" xmlUrl="https://victoryroad.pro/feed/" htmlUrl="https://victoryroad.pro/"/>
+    </outline>
+    <outline text="Food">
+      <outline type="rss" text="RecipeTin Eats" xmlUrl="https://www.recipetineats.com/feed/" htmlUrl="https://www.recipetineats.com/"/>
+      <outline type="rss" text="Budget Bytes" xmlUrl="https://www.budgetbytes.com/feed/" htmlUrl="https://www.budgetbytes.com/"/>
+    </outline>
+    <outline text="Long Reads">
+      <outline type="rss" text="Aeon" xmlUrl="https://aeon.co/feed.rss" htmlUrl="https://aeon.co/"/>
+      <outline type="rss" text="Longreads" xmlUrl="https://longreads.com/feed/" htmlUrl="https://longreads.com/"/>
+    </outline>
+  </body>
+</opml>
