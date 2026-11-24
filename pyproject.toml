@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "morning-paper"
-version = "0.1.0"
+version = "0.1.1"
 description = "A daily e-reader newspaper: FreshRSS + widgets, curated by an LLM, built as an EPUB and emailed to a Kindle."
 readme = "README.md"
 license = { text = "MIT" }

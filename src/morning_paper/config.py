@@ -29,6 +29,10 @@ DEFAULTS: dict[str, Any] = {
     "max_age_hours": 26,
     "full_articles": 10,
     "min_article_words": 150,
+    # Below this many stories the paper isn't sent and the run counts as failed
+    # (so `serve` retries until catch_up_until): an outage upstream (FreshRSS
+    # login, network) shouldn't mail you an empty paper.
+    "min_stories": 1,
     "fetch_timeout": 20,
     "llm": {"base_url": "", "api_key": "", "models": [], "timeout": 180, "max_tokens": 4096},
     "freshrss": {"url": "", "user": "", "api_password": "", "mark_read": False},

@@ -18,6 +18,10 @@ from .state import State
 
 log = logging.getLogger(__name__)
 
+class EmptyPaper(RuntimeError):
+    pass
+
+
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 
@@ -114,6 +118,8 @@ def run(cfg: dict, send: bool = True, out: Path | None = None, only: list[str] |
     # --- deliver ----------------------------------------------------------
     if not send:
         return path
+    if n_items < int(cfg["min_stories"]):
+        raise EmptyPaper(f"only {n_items} stories (min_stories={cfg['min_stories']}); not sending {path.name}")
     if not deliver.can_send(cfg):
         log.warning("deliver: SMTP not configured, built only")
         state.save(run_day=now.date())

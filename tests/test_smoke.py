@@ -131,3 +131,16 @@ def test_generate_section_tidies_markdown(monkeypatch):
     html = curate.generate_section(llm, {"name": "In the Kitchen", "generate": "x"}, datetime(2026, 11, 24), "")
     assert "In the Kitchen" not in html and "<h2>Ideas</h2>" in html and "<h1>" not in html
     assert "<li>One</li>" in html
+
+
+def test_empty_paper_is_not_sent(tmp_path, monkeypatch):
+    from morning_paper import deliver, pipeline
+
+    p = tmp_path / "paper.yml"
+    p.write_text(f"data_dir: {tmp_path}\ndelivery: {{smtp_user: u, smtp_password: p, to: [k@kindle.com]}}\n")
+    sent = []
+    monkeypatch.setattr(deliver, "send", lambda *a: sent.append(a))
+    with pytest.raises(pipeline.EmptyPaper):
+        pipeline.run(config.load(p))
+    assert not sent
+    assert not (tmp_path / "state.json").exists()  # not counted as today's run
