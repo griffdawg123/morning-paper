@@ -144,3 +144,18 @@ def test_empty_paper_is_not_sent(tmp_path, monkeypatch):
         pipeline.run(config.load(p))
     assert not sent
     assert not (tmp_path / "state.json").exists()  # not counted as today's run
+
+
+@pytest.mark.parametrize(
+    "title,source,want",
+    [
+        ("v3.3.5", "Release notes from immich", "immich v3.3.5"),
+        ("10.11.3", "Release notes from jellyfin", "jellyfin 10.11.3"),
+        ("FreshRSS 1.31.0", "Release notes from FreshRSS", "FreshRSS 1.31.0"),
+        ("Molly Meldrum dies", "Music Feeds", "Molly Meldrum dies"),
+    ],
+)
+def test_display_title(title, source, want):
+    from morning_paper.sources import display_title
+
+    assert display_title(title, source) == want

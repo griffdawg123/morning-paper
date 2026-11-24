@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 
@@ -14,6 +15,16 @@ from .models import Item
 from .text import to_text
 
 log = logging.getLogger(__name__)
+
+_BARE_VERSION = re.compile(r"^(v|version\s*)?\d+(\.\d+)*\S*$", re.I)
+_RELEASE_FEED = re.compile(r"^release notes from\s+", re.I)
+
+
+def display_title(title: str, source: str) -> str:
+    """GitHub release titles are often just "v3.3.5": prefix the project name."""
+    if _BARE_VERSION.match(title.strip()) and source:
+        return f"{_RELEASE_FEED.sub('', source).strip()} {title.strip()}"
+    return title
 
 READ_TAG = "user/-/state/com.google/reader/read"
 
@@ -56,12 +67,13 @@ class FreshRSS:
             if not url:
                 continue
             body = (e.get("content") or e.get("summary") or {}).get("content", "")
+            source = (e.get("origin") or {}).get("title", "")
             items.append(
                 Item(
                     id=url,
                     url=url,
-                    title=to_text(e.get("title", "")) or url,
-                    source=(e.get("origin") or {}).get("title", ""),
+                    title=display_title(to_text(e.get("title", "")) or url, source),
+                    source=source,
                     published=datetime.fromtimestamp(int(e.get("published", 0)), timezone.utc),
                     snippet=to_text(body, 400),
                     feed_html=body,
@@ -106,7 +118,7 @@ def read_feed(url: str, since: datetime, timeout: int = 20) -> list[Item]:
             Item(
                 id=link,
                 url=link,
-                title=to_text(e.get("title", "")) or link,
+                title=display_title(to_text(e.get("title", "")) or link, source),
                 source=source,
                 published=published,
                 snippet=to_text(body, 400),
