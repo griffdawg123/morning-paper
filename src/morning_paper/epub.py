@@ -4,6 +4,9 @@ Layout: cover, front page (widgets), then for each section a headlines page
 (every pick with its blurb; full-text picks link to their chapter, the rest
 to the web) followed by that section's article chapters. The table of contents
 is nested by section, so the Kindle's "Go to" menu works like a paper's index.
+Every section and article page also links back to the front page's contents
+list (front.xhtml#contents) and on to the next section, so you can jump around
+without the Kindle menu.
 Kept deliberately plain (no images, minimal CSS): Send to Kindle converts the
 EPUB and fancy layout doesn't survive.
 """
@@ -32,7 +35,10 @@ p { margin: 0 0 0.7em; }
 .masthead { text-align: center; }
 .masthead .tagline { font-style: italic; font-size: 0.9em; }
 .nav { font-size: 0.85em; margin-top: 2em; }
+.nav-top { font-size: 0.85em; margin: 0 0 0.6em; }
 """
+
+CONTENTS = "front.xhtml#contents"  # the front page's section list
 
 FONT_DIRS = ["/usr/share/fonts/truetype/dejavu", "/usr/share/fonts/TTF", "/usr/share/fonts/dejavu"]
 
@@ -141,16 +147,19 @@ def build(ed: Edition, out_path: Path, font_dir: str | None = None) -> Path:
         "front.xhtml",
         f'<div class="masthead"><h1>{esc(ed.title)}</h1>'
         f'<p class="tagline">{esc(ed.tagline)}</p><p>{ed.date:%A %-d %B %Y}</p></div>'
-        f"{widgets}<h2>In this edition</h2><ul>{contents}</ul>",
+        f'{widgets}<h2 id="contents">In this edition</h2><ul>{contents}</ul>',
         css,
     )
     book.add_item(front)
     spine.append(front)
     toc.append(epub.Link("front.xhtml", "Front page", "front"))
 
+    home = f'<a href="{CONTENTS}">Contents</a>'
     for n, section in enumerate(ed.sections):
         sec_file = f"sec-{n}.xhtml"
-        parts = [f"<h1>{esc(section.name)}</h1>"]
+        nxt = ed.sections[n + 1].name if n + 1 < len(ed.sections) else None
+        next_link = f' · <a href="sec-{n + 1}.xhtml">Next: {esc(nxt)}</a>' if nxt else ""
+        parts = [f'<p class="nav-top">{home}{next_link}</p>', f"<h1>{esc(section.name)}</h1>"]
         if section.generated_html:
             parts.append(section.generated_html)
         chapters = []
@@ -172,10 +181,11 @@ def build(ed: Edition, out_path: Path, font_dir: str | None = None) -> Path:
                     f"<h1>{esc(item.title)}</h1><p class=\"meta\">{byline}</p>"
                     f"{item.body_html}"
                     f'<p class="nav">Original: {esc(item.url)}<br/>'
-                    f'<a href="{sec_file}">Back to {esc(section.name)}</a></p>',
+                    f'<a href="{sec_file}">Back to {esc(section.name)}</a> · {home}{next_link}</p>',
                     css,
                 )
                 chapters.append(art)
+        parts.append(f'<p class="nav">{home}{next_link}</p>')
         page = _page(section.name, sec_file, "".join(parts), css)
         book.add_item(page)
         spine.append(page)

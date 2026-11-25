@@ -28,7 +28,8 @@ extracted stays a headline with a link.
   status, on this day) and the list of sections.
 - **Per section**: a headlines page (every pick with its blurb; full-text picks
   link to their chapter, others to the web), then that section's chapters.
-- The Kindle's "Go to" menu is nested by section.
+- The Kindle's "Go to" menu is nested by section, and every section and
+  article page links back to the contents and on to the next section.
 
 ## Configuration
 
@@ -74,6 +75,12 @@ without one.
 
 Adding one is a function in `src/morning_paper/widgets/` decorated with
 `@widget("name", "Heading")` that returns an HTML fragment.
+
+**Notifications**: set `notify.url` to an [ntfy](https://ntfy.sh) topic URL
+to get a push when the paper has been sent ("sync your Kindle"), plus one
+high-priority alert if the day's run fails after its last retry. Optional:
+`token` (ntfy access token), `priority`, `tags`, `click` (URL opened on tap),
+`on_failure: false` to skip failure alerts.
 
 **LLM**: any OpenAI-compatible `/chat/completions` endpoint. `models` are tried
 in order, so a local model can go first with a hosted fallback. Through Open

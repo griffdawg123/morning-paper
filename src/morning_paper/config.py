@@ -47,6 +47,9 @@ DEFAULTS: dict[str, Any] = {
     # Optional URL to GET after a successful send (e.g. an Uptime Kuma push
     # monitor), so a paper that silently stops arriving gets noticed.
     "heartbeat_url": "",
+    # Optional ntfy push when the paper has been sent (so you know to sync the
+    # Kindle) and when the day's run has failed for good. url = full topic URL.
+    "notify": {"url": "", "token": "", "priority": "default", "tags": [], "click": "", "on_failure": True},
     "widgets": {},
     "sections": [],
 }

@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import config, pipeline, widgets
+from . import config, notify, pipeline, widgets
 from .state import State
 
 log = logging.getLogger("morning_paper")
@@ -41,9 +41,12 @@ def serve(cfg_path: Path) -> None:
             cfg = config.load(cfg_path)
         try:
             pipeline.run(cfg)
-        except Exception:  # noqa: BLE001
+        except Exception as e:  # noqa: BLE001
             # Inside the catch-up window this retries; after it, tomorrow.
             log.exception("serve: run failed; retrying in 15 minutes if still before catch_up_until")
+            retry_at = datetime.now(tz) + timedelta(seconds=900)
+            if retry_at >= _at(retry_at, cfg["catch_up_until"]):
+                notify.failed(cfg, str(e) or type(e).__name__)  # last attempt today
             time.sleep(900)
         else:
             time.sleep(60)  # step past the scheduled minute
