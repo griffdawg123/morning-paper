@@ -45,6 +45,16 @@ delivery:
 
 heartbeat_url: ${HEARTBEAT_URL}     # optional Uptime Kuma push URL
 
+# Optional ntfy push: "paper's out, sync your Kindle", and one alert if the
+# day's run fails for good. url is the full topic URL; token only if your
+# ntfy needs auth.
+notify:
+  url: https://ntfy.sh/my-secret-morning-paper-topic
+  # token: ${NTFY_TOKEN}
+  # priority: default    # min|low|default|high|max
+  # tags: [newspaper]    # emoji shortcodes shown on the notification
+  # on_failure: true
+
 # Front page, in this order. Remove a block to drop it.
 widgets:
   weather: {place: Sydney, latitude: -33.87, longitude: 151.21}

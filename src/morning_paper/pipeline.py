@@ -11,7 +11,7 @@ from zoneinfo import ZoneInfo
 
 import requests
 
-from . import curate, deliver, epub, extract, sources, widgets
+from . import curate, deliver, epub, extract, notify, sources, widgets
 from .llm import LLM
 from .models import Edition, Item, Section
 from .state import State
@@ -124,7 +124,9 @@ def run(cfg: dict, send: bool = True, out: Path | None = None, only: list[str] |
         log.warning("deliver: SMTP not configured, built only")
         state.save(run_day=now.date())
         return path
-    deliver.send(cfg, path, f"{cfg['title']}: {now:%A %-d %B %Y}")
+    subject = f"{cfg['title']}: {now:%A %-d %B %Y}"
+    deliver.send(cfg, path, subject)
+    notify.published(cfg, subject, len(ed.sections), n_items, n_full)
 
     used = [it for s in ed.sections for it in s.items]
     state.mark_seen([it.id for it in used])

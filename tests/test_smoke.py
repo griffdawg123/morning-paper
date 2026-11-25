@@ -115,8 +115,36 @@ def test_epub_builds(tmp_path):
         assert 'href="art-0-0.xhtml"' in sec and "https://example.com/1" in sec
         assert "&amp; &lt;friends&gt;" in sec
         assert "Tacos" in z.read("EPUB/sec-1.xhtml").decode()
+        # Navigation: contents anchor on the front page, links back to it everywhere.
+        assert 'id="contents"' in z.read("EPUB/front.xhtml").decode()
+        assert 'href="front.xhtml#contents"' in sec and 'href="sec-1.xhtml"' in sec
+        last = z.read("EPUB/sec-1.xhtml").decode()
+        assert 'href="front.xhtml#contents"' in last and "Next:" not in last
+        art = z.read("EPUB/art-0-0.xhtml").decode()
+        assert 'href="sec-0.xhtml"' in art and 'href="front.xhtml#contents"' in art and 'href="sec-1.xhtml"' in art
         assert any(n.endswith("cover.jpg") for n in names)
     assert word_count("<p>one two three</p>") == 3
+
+
+def test_notify_posts_to_ntfy(monkeypatch):
+    from morning_paper import notify
+
+    calls = []
+    monkeypatch.setattr(notify.requests, "post", lambda url, data, headers, timeout: calls.append((url, data, headers)) or _Ok())
+    cfg = {"title": "Paper", "notify": {"url": "http://ntfy/topic", "token": "t"}}
+    notify.published(cfg, "Paper: Wed", 3, 12, 4)
+    url, data, headers = calls[0]
+    assert url == "http://ntfy/topic" and b"12 stories in 3 sections" in data
+    assert headers["Title"] == "Paper is out" and headers["Authorization"] == "Bearer t"
+    notify.failed(cfg, "boom")
+    assert calls[1][2]["Priority"] == "high" and b"boom" in calls[1][1]
+    notify.published({"title": "Paper", "notify": {"url": ""}}, "x", 1, 1, 1)
+    assert len(calls) == 2  # unconfigured: no request
+
+
+class _Ok:
+    def raise_for_status(self):
+        pass
 
 
 def test_season_by_hemisphere():
